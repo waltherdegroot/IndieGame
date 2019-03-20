@@ -11,9 +11,10 @@ public class FollowingCamera : MonoBehaviour
 
     public Vector3 offset;
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        transform.position = target.position + offset;
+        Vector3 desiredPosition = target.position + offset;
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        transform.position = smoothedPosition;
     }
 }
