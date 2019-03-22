@@ -16,13 +16,13 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        float moveHorizontal = Input.GetAxis("Horizontal") / 7;
+        float moveVertical = Input.GetAxis("Vertical") / 7;
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        Vector3 newPosition = new Vector3(rb.position.x + moveHorizontal, rb.position.y + 0.0f, rb.position.z + moveVertical);
 
-        rb.AddForce(movement * speed);
+        rb.position = newPosition;
     }
 }
