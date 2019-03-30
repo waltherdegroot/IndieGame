@@ -32,6 +32,14 @@ public class EnemyBehaviourScript : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter(Collision hit)
+    {
+        if (hit.gameObject.tag == "Player")
+        {
+            PlayerManager.instance.playerHealth = PlayerManager.instance.playerHealth - UnityEngine.Random.Range(1,10);
+        }
+    }
+
     void FaceTarget()
     {
         Vector3 direction = (target.position - transform.position).normalized;
