@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     //public variables
     public float movementSpeed = 5f;
     public float jumpHeight = 5f;
+
+    public Text healthText;
 
     //private variables
     private Rigidbody rb;
@@ -24,8 +27,10 @@ public class PlayerController : MonoBehaviour
         var horizontalMovement = Input.GetAxis("Horizontal");
         var verticalMovement = Input.GetAxis("Vertical");
 
+        healthText.text = string.Format("health: {0}", PlayerManager.instance.playerHealth);
+
         if (PlayerManager.instance.playerHealth <= 0)
-            print("YOU ARE DEAD!!!!! -.-");
+            Application.LoadLevel(Application.loadedLevel);
 
         moveDirection = new Vector3(0f, 0f, 0f);
 
@@ -37,24 +42,6 @@ public class PlayerController : MonoBehaviour
         if (grounded  && Input.GetKey(KeyCode.LeftShift) || grounded && Input.GetKey(KeyCode.RightShift))
         {
             moveDirection = moveDirection * 1.5f;
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.Space) && grounded || Input.GetKeyDown(KeyCode.Space) && doubleJump)
-        {
-            if (rb.velocity.y < 0)
-            {
-                rb.AddForce(new Vector3(1f, jumpHeight * 2f, 1f),ForceMode.Impulse);
-            }
-            else
-            {
-                rb.AddForce(new Vector3(1f, jumpHeight, 1f),ForceMode.Impulse);
-            }
-
-            if(!grounded && doubleJump)
-            {
-                doubleJump = false;
-            }
         }
 
         if (Input.GetMouseButtonDown(1))
@@ -72,14 +59,32 @@ public class PlayerController : MonoBehaviour
             rb.velocity += Vector3.up * Physics.gravity.y * (2.5f - 1) * Time.deltaTime;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.Space) && grounded || Input.GetKeyDown(KeyCode.Space) && doubleJump)
         {
-            calculateShot();
+            if (rb.velocity.y < 0)
+            {
+                rb.AddForce(new Vector3(1f, jumpHeight * 2f, 1f), ForceMode.Impulse);
+            }
+            else
+            {
+                rb.AddForce(new Vector3(1f, jumpHeight, 1f), ForceMode.Impulse);
+            }
+
+            if (!grounded && doubleJump)
+            {
+                doubleJump = false;
+            }
         }
     }
 
     void OnCollisionEnter(Collision hit)
     {
+        if (hit.gameObject.tag == "grenade")
+        {
+            Physics.IgnoreCollision(hit.collider, GetComponent<Collider>());
+            print("player hit");
+        }
+
         if (hit.gameObject.tag == "Ground")
         {
             grounded = true;
@@ -101,22 +106,5 @@ public class PlayerController : MonoBehaviour
         
         rb.velocity = moveDirection * movementSpeed * (Time.deltaTime / 2);
         rb.velocity += yFix;
-    }
-
-    void Shoot()
-    {
-        
-    }
-
-    void calculateShot()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        var raycast = Physics.Raycast(ray, out hit, 100);
-
-        Debug.DrawLine(ray.origin, hit.point, Color.black, 10f);
-
-        print(hit.collider.name);
     }
 }

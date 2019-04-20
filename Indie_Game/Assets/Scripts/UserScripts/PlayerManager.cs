@@ -17,4 +17,5 @@ public class PlayerManager : MonoBehaviour
 
     public GameObject player;
     public int playerHealth = 100;
+    public int grenades = 2;
 }

@@ -12,6 +12,7 @@ public class TerrainGenerator : MonoBehaviour
     public float scale = 20f;
     public float offsetX = 100f;
     public float offsetY = 100f;
+    public int noiseLoop = 6;
 
     public NavMeshSurface navMesh;
 
@@ -59,7 +60,7 @@ public class TerrainGenerator : MonoBehaviour
         float yCoord = (float)y / lenght * (scale / 1.3f) + offsetY;
         float result = 0f;
         
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < noiseLoop; i++)
         {
             if (result == 0f)
             {
